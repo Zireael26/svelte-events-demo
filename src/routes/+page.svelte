@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import Modal from '../components/Modal.svelte';
 	import Product from '../components/Product.svelte';
 
@@ -8,7 +9,7 @@
 	];
 
 	let showModal = false;
-	let closable = false;
+	let text = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.';
 
 	function addToCart(event: CustomEvent) {
 		console.log('Add to cart: ', event);
@@ -16,6 +17,27 @@
 
 	function deleteProduct(event: CustomEvent) {
 		console.log('Delete Product', event);
+	}
+
+	function transformText(event: KeyboardEvent) {
+		if (event.key !== 'Tab') {
+			return;
+		}
+		event.preventDefault();
+
+		const selectionStart = (event.target as HTMLTextAreaElement).selectionStart;
+		const selectionEnd = (event.target as HTMLTextAreaElement).selectionEnd;
+		const value = (event.target as HTMLTextAreaElement).value;
+
+		text =
+			value.slice(0, selectionStart) +
+			value.slice(selectionStart, selectionEnd).toUpperCase() +
+			value.slice(selectionEnd);
+
+		tick().then(() => {
+			(event.target as HTMLTextAreaElement).selectionStart = selectionStart;
+			(event.target as HTMLTextAreaElement).selectionEnd = selectionEnd;
+		});
 	}
 </script>
 
@@ -37,3 +59,5 @@
 		>
 	</Modal>
 {/if}
+
+<textarea rows="5" on:keydown={transformText}>{text}</textarea>

@@ -1,9 +1,36 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount, onDestroy, beforeUpdate, afterUpdate } from 'svelte';
 
 	let agreed = false;
+	let autoscroll = false;
 
 	const dispatch = createEventDispatcher();
+
+	onMount(() => {
+		console.log('Modal mounted, onMount Called.');
+	});
+
+	onDestroy(() => {
+		console.log('Modal destroyed, onDestroy Called.');
+	});
+
+	beforeUpdate(() => {
+		console.log('Modal beforeUpdate Called.');
+		// Gather information about the update
+		autoscroll = agreed;
+	});
+
+	afterUpdate(() => {
+		console.log('Modal afterUpdate Called.');
+		// Use the information gathered in beforeUpdate
+		if (autoscroll) {
+			// window.scrollTo(0, document.body.scrollHeight);
+			const mdl = document.querySelector('.modal')!;
+			mdl.scrollTo(0, mdl.scrollHeight);
+		}
+	});
+
+	console.log('Modal script execution complete.');
 </script>
 
 <div class="backdrop" on:click={() => dispatch('cancel')} on:keypress />
@@ -43,7 +70,7 @@
 		top: 10vh;
 		left: 10%;
 		width: 80%;
-		max-height: 80vh;
+		max-height: 10vh;
 		background: white;
 		border-radius: 5px;
 		z-index: 100;
