@@ -8,6 +8,7 @@
 	];
 
 	let showModal = false;
+	let closable = false;
 
 	function addToCart(event: CustomEvent) {
 		console.log('Add to cart: ', event);
@@ -28,6 +29,11 @@
 		<header slot="header">Here is a header</header>
 		<h2>Here is some content</h2>
 		<p>Here is some more content</p>
-		<!-- <p slot="footer">Here is a footer</p> -->
+		<button
+			slot="footer"
+			let:didAgree={closable}
+			disabled={!closable}
+			on:click={() => (showModal = false)}>Complete</button
+		>
 	</Modal>
 {/if}
